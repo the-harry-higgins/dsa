@@ -31,38 +31,23 @@ function readLine() {
  * The function accepts 2D_INTEGER_ARRAY intervals as parameter.
  */
 
-function checkAndMerge(mergedIntervals, start, end) {
-  const indices = []
-  for (let i = 0; i < mergedIntervals.length; i++) {
-    const iStart = mergedIntervals[i][0];
-    const iEnd = mergedIntervals[i][1];
-    if ((start >= iStart && start <= iEnd) ||
-      (end <= iEnd && end >= iStart) ||
-      (start < iStart && end > iEnd)) {
-      start = Math.min(start, iStart);
-      end = Math.max(end, iEnd);
-      indices.push(i);
+function getMergedIntervals(intervals) {
+  // Write your code here
+  if (intervals.length === 0) return [];
+
+  intervals.sort((a, b) => a[0] - b[0]);
+
+  let mergedIntervals = [intervals[0]];
+
+  for (let i = 1; i < intervals.length; i++) {
+    let lastMerged = mergedIntervals[mergedIntervals.length - 1];
+    let current = intervals[i];
+    if (lastMerged[1] >= current[0]) {
+      lastMerged[1] = Math.max(lastMerged[1], current[1]);
+    } else {
+      mergedIntervals.push(current);
     }
   }
 
-  const newMerged = mergedIntervals.filter((interval, i) => {
-    return !indices.includes(i);
-  });
-
-  newMerged.unshift([start, end]);
-
-  return newMerged;
+  return mergedIntervals;
 }
-
-
-function getMergedIntervals(intervals) {
-  // Write your code here
-  let mergedIntervals = [];
-  for (let i = 0; i < intervals.length; i++) {
-    mergedIntervals = checkAndMerge(mergedIntervals, intervals[i][0], intervals[i][1]);
-  }
-
-  return mergedIntervals.sort((a, b) => a[0] - b[0]);
-}
-
-function main() {
