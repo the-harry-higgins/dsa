@@ -77,7 +77,7 @@ function scatterPalindrome(strToEvaluate) {
       // console.log('here');
       const lookup = {}
       // addToLookup(str[start], lookup);
-      for (let end = start + 1; end <= str.length; end++) {
+      for (let end = start + 1; end <= str.length; end++) { // use a set and set length to determin if scatter palindrome
         const substr = str.slice(start, end);
         // console.log('substring',substr);
         // console.log(lookup);
