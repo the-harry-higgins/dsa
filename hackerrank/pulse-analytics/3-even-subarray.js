@@ -1,28 +1,3 @@
-'use strict';
-
-const fs = require('fs');
-
-process.stdin.resume();
-process.stdin.setEncoding('utf-8');
-
-let inputString = '';
-let currentLine = 0;
-
-process.stdin.on('data', function (inputStdin) {
-  inputString += inputStdin;
-});
-
-process.stdin.on('end', function () {
-  inputString = inputString.split('\n');
-
-  main();
-});
-
-function readLine() {
-  return inputString[currentLine++];
-}
-
-
 
 /*
  * Complete the 'evenSubarray' function below.
@@ -33,44 +8,9 @@ function readLine() {
  *  2. INTEGER k
  */
 
-function evenSubarraya(numbers, k) {
-  // Write your code here
-  let solutions = [];
-  for (let i = 0; i < numbers.length; i++) {
-    let odds = 0;
-    for (let j = i; j < numbers.length; j++) {
-      if (numbers[j] % 2 === 1) {
-        odds++;
-      }
-      if (odds <= k) {
-        solutions.push([i, j]);
-        // console.log(String(numbers.slice(i,j+1)));
-        // if (!solutions.has(String(numbers.slice(i,j+1)))) {
-        //     solutions.add(String(numbers.slice(i,j+1)));
-        // }
-      } else {
-        break;
-      }
-    }
-  }
-  const unique = new Set();
-  for (let solution of solutions) {
-    const key = String(numbers.slice(solution[0], solution[1] + 1));
-    // console.log(String(numbers.slice(i,j+1)));
-    if (!unique.has(key)) {
-      unique.add(key);
-    }
-  }
-  return unique.size;
-}
-
-
 function evenSubarray(numbers, k) {
   // Write your code here
-  const solutions = {}
-  numbers.forEach((_, i) => {
-    solutions[i] = new Set();
-  });
+  let solutions = new Set();
 
   for (let i = 0; i < numbers.length; i++) {
     let odds = 0;
@@ -80,38 +20,56 @@ function evenSubarray(numbers, k) {
       }
       if (odds <= k) {
         const key = String(numbers.slice(i, j + 1));
-        if (!solutions[j - i].has(key)) {
-          solutions[j - i].add(key);
+        if (!solutions.has(key)) {
+          solutions.add(key);
         }
       } else {
         break;
       }
     }
   }
-  let count = 0;
-  Object.keys(solutions).forEach(key => {
-    count += solutions[key].size
-  });
-  return count;
+
+  return solutions.size;
 }
 
-function main() {
-  const ws = fs.createWriteStream(process.env.OUTPUT_PATH);
+function evenSubarrayImproved(numbers, k) {
+  // Write your code here
+  let solutions = new Set();
 
-  const numbersCount = parseInt(readLine().trim(), 10);
-
-  let numbers = [];
-
-  for (let i = 0; i < numbersCount; i++) {
-    const numbersItem = parseInt(readLine().trim(), 10);
-    numbers.push(numbersItem);
+  for (let i = 0; i < numbers.length; i++) {
+    let odds = 0;
+    let str = '';
+    for (let j = i; j < numbers.length; j++) {
+      if (numbers[j] % 2 === 1) {
+        odds++;
+      }
+      if (odds <= k) {
+        str += `${numbers[j]},`
+        if (!solutions.has(str)) {
+            solutions.add(str);
+        }
+      } else {
+        break;
+      }
+    }
   }
-
-  const k = parseInt(readLine().trim(), 10);
-
-  const result = evenSubarray(numbers, k);
-
-  ws.write(result + '\n');
-
-  ws.end();
+  
+  return solutions.size;
 }
+
+const input = []
+for (let i = 0; i < 100_000_000; i++) {
+  input.push(1);
+}
+
+console.time('evenSubarrayImproved')
+
+console.log(evenSubarrayImproved(input, 1));
+
+console.timeEnd('evenSubarrayImproved')
+
+console.time('evenSubarray')
+
+console.log(evenSubarray(input, 1));
+
+console.timeEnd('evenSubarray')
